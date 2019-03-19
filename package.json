@@ -1,0 +1,56 @@
+{
+  "name": "ipc-network",
+  "version": "1.0.0",
+  "description": "Inter-process communication network, allows multiple node process to exchange messages using unix-socket.",
+  "keywords": [
+    "ipc",
+    "rpc",
+    "jobs",
+    "sock",
+    "event",
+    "socket",
+    "process",
+    "network",
+    "messages",
+    "unixsocket",
+    "child_process"
+  ],
+  "main": "lib/index.js",
+  "scripts": {
+    "clean": "rm -Rf ./dist ./build ./coverage",
+    "clean:all": "npm run clean && rm -Rf ./node_modules",
+    "build": "npm run clean && ./node_modules/typescript/bin/tsc --build --pretty ./tsconfig.json",
+    "baz": "cp -R *.md .gitignore .npmignore LICENSE ChangeLog package.json ./dist",
+    "foo": "npm publish ./dist --access public",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Marek Ulwański <marek@ulwanski.pl>",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "nanoid": "^2.0.1",
+    "unix-dgram-socket": "^1.0.9"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.1.7",
+    "@types/expect": "^1.20.4",
+    "@types/mocha": "^5.2.6",
+    "@types/nanoid": "^1.2.1",
+    "@types/node": "^11.9.3",
+    "@types/rewire": "^2.5.28",
+    "@types/sinon": "^7.0.6",
+    "chai": "^4.2.0",
+    "eslint": "^5.14.0",
+    "eslint-plugin-security": "^1.4.0",
+    "expect": "^24.1.0",
+    "mocha": "^6.0.1",
+    "node-gyp": "^3.8.0",
+    "nyc": "^13.3.0",
+    "rewire": "^4.0.1",
+    "sinon": "^7.2.4",
+    "ts-jest": "^24.0.0",
+    "ts-node": "^8.0.2",
+    "tslib": "^1.9.3",
+    "tslint": "^5.12.1",
+    "typescript": "^3.3.3"
+  }
+}

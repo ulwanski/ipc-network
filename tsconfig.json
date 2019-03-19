@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "moduleResolution": "node",
+    "target": "ES5",
+    "module": "CommonJS",
+    "declaration": true,
+    "sourceMap": true,
+    "outDir": "./dist/lib",
+    "baseUrl": ".",
+    "newLine": "lf",
+    "experimentalDecorators": false,
+    "emitDecoratorMetadata": false,
+    "alwaysStrict": true,
+    "removeComments": true,
+    "importHelpers": true
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "test",
+    "src/**/example*"
+  ],
+  "compileOnSave": true
+}
