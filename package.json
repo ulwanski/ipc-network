@@ -1,6 +1,6 @@
 {
   "name": "ipc-network",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Inter-process communication network, allows multiple node process to exchange messages using unix-socket.",
   "keywords": [
     "ipc",
@@ -29,8 +29,8 @@
     "clean:all": "npm run clean && rm -Rf ./node_modules",
     "build": "npm run clean && ./node_modules/typescript/bin/tsc --build --pretty ./tsconfig.json",
     "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
-    "prepare" : "cp -R *.md .gitignore .npmignore .eslintrc.js LICENSE ChangeLog package.json ./dist",
-    "prepublishOnly" : "npm test && npm run lint",
+    "prepare": "cp -R *.md .gitignore .npmignore .eslintrc.js LICENSE ChangeLog package.json ./dist",
+    "prepublishOnly": "npm test && npm run lint",
     "foo": "npm publish ./dist --access public",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
