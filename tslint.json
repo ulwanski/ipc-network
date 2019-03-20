@@ -1,5 +1,5 @@
 {
-  "extends": "tslint:recommended",
+  "extends": ["tslint:recommended", "tslint-config-prettier"],
   "linterOptions": {
     "project": "./tsconfig.json"
   },
@@ -44,6 +44,7 @@
     ],
     "object-literal-sort-keys": false,
     "no-angle-bracket-type-assertion": false,
-    "interface-name": false
+    "interface-name": false,
+    "member-ordering": false
   }
 }

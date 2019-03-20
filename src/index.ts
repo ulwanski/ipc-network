@@ -1,9 +1,3 @@
-import {IpcNetworkError} from "./IpcNetworkError";
-import {IpcNetwork} from "./IpcNetwork";
-import Message from "./Message";
-
-export {
-    IpcNetwork,
-    IpcNetworkError,
-    Message,
-}
+export * from "./lib/IpcNetworkError";
+export * from "./lib/IpcNetwork";
+export * from "./lib/Message";

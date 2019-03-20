@@ -15,17 +15,25 @@
     "unixsocket",
     "child_process"
   ],
-  "main": "lib/index.js",
+  "homepage": "https://github.com/ulwanski/ipc-network",
+  "license": "GPL-3.0",
+  "author": "Marek Ulwański <marek@ulwanski.pl>",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:ulwanski/ipc-network.git"
+  },
   "scripts": {
     "clean": "rm -Rf ./dist ./build ./coverage",
     "clean:all": "npm run clean && rm -Rf ./node_modules",
     "build": "npm run clean && ./node_modules/typescript/bin/tsc --build --pretty ./tsconfig.json",
-    "baz": "cp -R *.md .gitignore .npmignore LICENSE ChangeLog package.json ./dist",
+    "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
+    "prepare" : "cp -R *.md .gitignore .npmignore .eslintrc.js LICENSE ChangeLog package.json ./dist",
+    "prepublishOnly" : "npm test && npm run lint",
     "foo": "npm publish ./dist --access public",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Marek Ulwański <marek@ulwanski.pl>",
-  "license": "GPL-3.0",
   "dependencies": {
     "nanoid": "^2.0.1",
     "unix-dgram-socket": "^1.0.9"
@@ -45,12 +53,14 @@
     "mocha": "^6.0.1",
     "node-gyp": "^3.8.0",
     "nyc": "^13.3.0",
+    "prettier": "^1.16.4",
     "rewire": "^4.0.1",
     "sinon": "^7.2.4",
     "ts-jest": "^24.0.0",
     "ts-node": "^8.0.2",
     "tslib": "^1.9.3",
-    "tslint": "^5.12.1",
+    "tslint": "^5.14.0",
+    "tslint-config-prettier": "^1.18.0",
     "typescript": "^3.3.3"
   }
 }

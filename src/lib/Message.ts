@@ -1,4 +1,4 @@
-export default interface Message {
+export interface Message {
     message: Buffer;
     from: string;
 }

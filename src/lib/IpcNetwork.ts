@@ -1,8 +1,8 @@
-import nanoid = require("nanoid/async");
-import {UnixDgramSocket} from "unix-dgram-socket";
+import nanoId = require("nanoid/async");
 import {EventEmitter} from "events";
+import {UnixDgramSocket} from "unix-dgram-socket";
 import {IpcNetworkError} from "./IpcNetworkError";
-import JobItems from "./JobItems";
+import {JobItems} from "./JobItems";
 
 // TODO: Use Async to queue RPC jobs
 
@@ -49,10 +49,18 @@ export class IpcNetwork extends EventEmitter {
                 let sendResult: boolean = false;
 
                 try {
-                    const jobResult = this.rpcCallback(jobName, remoteSocketName);
-                    sendResult = this.unixSocket.send(IpcNetwork.composeMessage(IpcNetwork.TYPE_RPC_RESULT, jobResult, jobId), socketPath);
+                    if (this.rpcCallback) {
+                        const jobResult = this.rpcCallback(jobName, remoteSocketName);
+                        const messageReply = IpcNetwork.composeMessage(IpcNetwork.TYPE_RPC_RESULT, jobResult, jobId);
+                        sendResult = this.unixSocket.send(messageReply, socketPath);
+                    } else {
+                        const noSupport = 'This process has disabled support for RPC commands.';
+                        const messageReply = IpcNetwork.composeMessage(IpcNetwork.TYPE_RPC_ERROR, noSupport, jobId);
+                        sendResult = this.unixSocket.send(messageReply, socketPath);
+                    }
                 } catch (error) {
-                    sendResult = this.unixSocket.send(IpcNetwork.composeMessage(IpcNetwork.TYPE_RPC_ERROR, error.message, jobId), socketPath);
+                    const messageReply = IpcNetwork.composeMessage(IpcNetwork.TYPE_RPC_ERROR, error.message, jobId);
+                    sendResult = this.unixSocket.send(messageReply, socketPath);
                 }
 
                 if (!sendResult) {
@@ -62,14 +70,15 @@ export class IpcNetwork extends EventEmitter {
                 const jobId = message.slice(1, IpcNetwork.JOB_ID_LENGTH + 1).toString(UnixDgramSocket.payloadEncoding);
                 if (this.jobsItems[jobId]) {
                     if (this.jobsItems[jobId].timeoutTimer) {
-                        clearTimeout(this.jobsItems[jobId].timeoutTimer);
+                        clearTimeout(<number><unknown>this.jobsItems[jobId].timeoutTimer);
                     }
 
+                    const contentStart = 1 + IpcNetwork.JOB_ID_LENGTH;
                     if (messageType === IpcNetwork.TYPE_RPC_ERROR) {
-                        const errorMessage = message.slice(1 + IpcNetwork.JOB_ID_LENGTH).toString(UnixDgramSocket.payloadEncoding);
+                        const errorMessage = message.slice(contentStart).toString(UnixDgramSocket.payloadEncoding);
                         this.jobsItems[jobId].reject(new IpcNetworkError(IpcNetwork.ERROR_RPC_EXEC, errorMessage));
                     } else {
-                        this.jobsItems[jobId].resolve(message.slice(1 + IpcNetwork.JOB_ID_LENGTH));
+                        this.jobsItems[jobId].resolve(message.slice(contentStart));
                     }
 
                     delete this.jobsItems[jobId];
@@ -98,10 +107,10 @@ export class IpcNetwork extends EventEmitter {
             // To generate hardware random bytes, CPU will collect electromagnetic noise.
             // During the collection, CPU doesn’t work. If we will use asynchronous API for random generator,
             // another code could be executed during the entropy collection.
-            const jobId = await nanoid(IpcNetwork.JOB_ID_LENGTH);
+            const jobId = await nanoId(IpcNetwork.JOB_ID_LENGTH);
             const socketPath = IpcNetwork.getSocketPathFromName(socketName);
             const message: Buffer = IpcNetwork.composeMessage(IpcNetwork.TYPE_RPC_JOB, jobName, jobId);
-            let timeoutTimer: NodeJS.Timeout = null;
+            let timeoutTimer: NodeJS.Timeout | undefined;
 
             if (timeout) {
                 timeoutTimer = setTimeout(() => {
@@ -116,7 +125,8 @@ export class IpcNetwork extends EventEmitter {
             // Reject promise if message send was unsuccessful
             if (!result) {
                 delete this.jobsItems[jobId];
-                reject(new IpcNetworkError(IpcNetwork.ERROR_RPC_SEND, `Unable to send job to remote process: ${socketPath}`));
+                const errorMessage = `Unable to send job to remote process: ${socketPath}`;
+                reject(new IpcNetworkError(IpcNetwork.ERROR_RPC_SEND, errorMessage));
             }
         });
     }
@@ -137,7 +147,7 @@ export class IpcNetwork extends EventEmitter {
 
         // Convert string to Buffer
         if (typeof messageData === 'string') {
-            resultBuffer.push(Buffer.from(messageData, UnixDgramSocket.payloadEncoding))
+            resultBuffer.push(Buffer.from(messageData, UnixDgramSocket.payloadEncoding));
         }
 
         // Return concatenated data
