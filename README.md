@@ -38,6 +38,39 @@ ipc.on('error', (error: Error) => {
 
 ipc.send('example content', 'process-B');
 ```
+#### Sending RPC (requesting job)
+```typescript
+import {IpcNetwork} from "ipc-network";
+
+const ipc = new IpcNetwork('process-A');
+
+ipc.on('error', (error: Error) => {
+    console.log(error.message);
+});
+
+ipc.sendRpc('example-job', 'process-B', 500).then((result: Buffer) => {
+    console.log(`Received job data: ${result.toString()}`);
+}).catch((error: Error) => {
+    console.log(error.message);
+});
+```
+
+#### Receiving job
+```typescript
+import {IpcNetwork} from "ipc-network";
+
+const ipc = new IpcNetwork('process-B', (jobName: string, from: string) => {
+    console.log(`Received new job "${jobName}" from: ${from}`);
+
+    return Buffer.from('example jpb results!');
+});
+
+ipc.on('error', (error: Error) => {
+    console.log(error.message);
+});
+
+ipc.startListening();
+```
 
 ## Additional information 
 #### Contributing
