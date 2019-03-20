@@ -11,8 +11,7 @@ npm i ipc-network --save
 ## Examples
 #### Start listening for messages
 ```typescript
-import {IpcNetwork} from "IpcNetwork";
-import Message from "Message";
+import {IpcNetwork, Message} from "ipc-network";
 
 const ipc = new IpcNetwork('process-A');
 
@@ -29,7 +28,7 @@ ipc.startListening();
 
 #### Sending messages
 ```typescript
-import {IpcNetwork} from "IpcNetwork";
+import {IpcNetwork} from "ipc-network";
 
 const ipc = new IpcNetwork('process-A');
 
