@@ -35,7 +35,6 @@
   },
   "dependencies": {
     "nanoid": "^2.0.1",
-    "tslib": "^1.9.3",
     "unix-dgram-socket": "^1.0.9"
   },
   "devDependencies": {
