@@ -1,6 +1,6 @@
 {
   "name": "ipc-network",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Inter-process communication network, allows multiple node process to exchange messages using unix-socket.",
   "keywords": [
     "ipc",
