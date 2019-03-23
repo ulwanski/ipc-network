@@ -62,7 +62,7 @@ import {IpcNetwork} from "ipc-network";
 const ipc = new IpcNetwork('process-B', (jobName: string, from: string) => {
     console.log(`Received new job "${jobName}" from: ${from}`);
 
-    return Buffer.from('example jpb results!');
+    return Buffer.from('example job results!');
 });
 
 ipc.on('error', (error: Error) => {

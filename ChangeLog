@@ -5,6 +5,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
+- Unique id buffer removed
+- Unique id generator replaced by faster non-secure version
+
+## [1.0.5] - 2019-03-22
+- Added unique id buffer, for rpc jobs
 
 ## [1.0.4] - 2019-03-20
 - Removed tslib dependency from package.json

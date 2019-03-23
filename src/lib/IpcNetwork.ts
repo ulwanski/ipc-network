@@ -1,4 +1,4 @@
-import nanoId = require("nanoid/async");
+import nanoId = require("nanoid/non-secure");
 import {EventEmitter} from "events";
 import {UnixDgramSocket} from "unix-dgram-socket";
 import {IpcNetworkError} from "./IpcNetworkError";
@@ -16,18 +16,15 @@ export class IpcNetwork extends EventEmitter {
     private static readonly TYPE_RPC_RESULT = 0xA1;
     private static readonly TYPE_RPC_ERROR  = 0xAA;
     private static readonly JOB_ID_LENGTH   = 25;
-    private static readonly JOB_ID_BUFFER   = 20;
 
     protected processName: string;
     protected unixSocketPath: string;
     protected unixSocket: UnixDgramSocket;
     protected jobsItems: JobItems;
-    protected uniqBuffer: string[];
 
     public constructor(processName?: string, private rpcCallback?: (jobName: string, from: string) => Buffer | string) {
         super();
         this.jobsItems = {};
-        this.uniqBuffer = [];
         this.processName = (processName) ? processName : `pid-${process.ppid}-${process.pid}`;
         this.unixSocketPath = IpcNetwork.getSocketPathFromName(this.processName);
         this.unixSocket = new UnixDgramSocket();
@@ -106,15 +103,8 @@ export class IpcNetwork extends EventEmitter {
     }
 
     public sendRpc(jobName: string, socketName: string, timeout?: number): Promise<Buffer> {
-        return new Promise(async (resolve, reject) => {
-            let jobId: string;
-
-            if (this.uniqBuffer.length) {
-                jobId = <string>this.uniqBuffer.pop();
-            } else {
-                jobId = await nanoId(IpcNetwork.JOB_ID_LENGTH);
-            }
-
+        return new Promise( (resolve, reject) => {
+            const jobId = nanoId(IpcNetwork.JOB_ID_LENGTH);
             const socketPath = IpcNetwork.getSocketPathFromName(socketName);
             const message: Buffer = IpcNetwork.composeMessage(IpcNetwork.TYPE_RPC_JOB, jobName, jobId);
             let timeoutTimer: NodeJS.Timeout | undefined;
@@ -134,10 +124,6 @@ export class IpcNetwork extends EventEmitter {
                 delete this.jobsItems[jobId];
                 const errorMessage = `Unable to send job to remote process: ${socketPath}`;
                 reject(new IpcNetworkError(IpcNetwork.ERROR_RPC_SEND, errorMessage));
-            }
-
-            while (this.uniqBuffer.length < IpcNetwork.JOB_ID_BUFFER) {
-                this.uniqBuffer.push(await nanoId(IpcNetwork.JOB_ID_LENGTH));
             }
         });
     }
